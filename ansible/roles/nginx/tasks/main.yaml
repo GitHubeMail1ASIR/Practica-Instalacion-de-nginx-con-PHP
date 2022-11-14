@@ -1,0 +1,62 @@
+- name: Instalar nginx
+  apt:
+    name: nginx
+    state: present
+
+- name: Configuración de virtualhost con plantillas
+  template: 
+    src: etc/nginx/sites-available/vhost.j2
+    dest: /etc/nginx/sites-available/{{item["name"]}}.conf
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - "{{virtualhosts}}"
+
+- name: Crear los documentroot si no existen
+  ansible.builtin.file:
+    path: /{{item["datos"]["documentroot"]}}
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+  with_items:
+    - "{{virtualhosts}}"
+
+- name: Añade los enlaces simbólicos en sites-enabled
+  file:
+    src: /etc/nginx/sites-available/{{item["name"]}}.conf
+    dest: /etc/nginx/sites-enabled/{{item["name"]}}.conf
+    state: link
+    mode: 0755
+  with_items:
+    - "{{virtualhosts}}"
+
+- name: Copia los index.html
+  copy:
+    src: index_{{item["name"]}}.html
+    dest: /{{item["datos"]["documentroot"]}}/index.html
+    owner: www-data
+    group: www-data
+    mode: 0644
+  with_items:
+    - "{{virtualhosts}}"
+
+- name: Copia el directorio nuevodirectorio
+  copy:
+    src: nuevodirectorio
+    dest: /{{item["datos"]["documentroot"]}}/
+    owner: www-data
+    group: www-data
+    mode: 0644
+  with_items:
+    - "{{virtualhosts}}"
+  notify: restart nginx
+
+- name: Desactiva el virtualhost pagina2.org
+  file:
+    path: /etc/nginx/sites-enabled/{{item["name"]}}.conf
+    state: absent
+  with_items:
+    - "{{des_virtualhost}}"
+  notify: restart nginx

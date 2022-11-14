@@ -1,0 +1,14 @@
+- name: Instalar php7.4 y php7.4-fpm
+  apt:
+    name: ['php7.4', 'php7.4-fpm']
+    state: present
+
+- name: Copiar info.php
+  copy:
+    src: info.php
+    dest: /{{item["datos"]["documentroot"]}}/
+    owner: www-data
+    group: www-data
+    mode: 0644
+  with_items:
+    - "{{virtualhosts}}"

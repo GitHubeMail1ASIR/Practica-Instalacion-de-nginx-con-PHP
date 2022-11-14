@@ -1,0 +1,4 @@
+- name: Ensure system is updated
+  apt:
+    update_cache: yes
+    upgrade: "yes"

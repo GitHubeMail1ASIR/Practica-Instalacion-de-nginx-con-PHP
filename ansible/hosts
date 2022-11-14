@@ -1,0 +1,8 @@
+all:
+  children:
+    grupo_sw:
+      hosts:
+        proxy: 
+          ansible_ssh_host: 192.168.121.9
+          ansible_ssh_user: vagrant 
+          ansible_ssh_private_key_file: ../.vagrant/machines/proxy/libvirt/private_key

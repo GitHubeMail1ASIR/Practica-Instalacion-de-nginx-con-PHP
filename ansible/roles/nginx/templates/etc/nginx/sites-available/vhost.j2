@@ -1,0 +1,21 @@
+server {
+    listen 80;
+	root {{item.datos.documentroot}};
+	index index.html index.htm index.php;
+	server_name {{item.datos.nameserver}};
+
+    error_log /var/log/nginx/{{item.datos.errorlog}}.log;
+    access_log /var/log/nginx/{{item.datos.accesslog}}.log;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    location ~ \.php$ {
+            include snippets/fastcgi-php.conf;
+            fastcgi_pass unix:/run/php/php7.4-fpm.sock;
+        }
+
+    rewrite ^/directorio$ http://www.pagina1.org/nuevodirectorio;
+
+}
