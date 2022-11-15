@@ -12,10 +12,7 @@ server {
     }
 
     location ~ \.php$ {
-            include snippets/fastcgi-php.conf;
-            fastcgi_pass unix:/run/php/php7.4-fpm.sock;
-        }
-
-    rewrite ^/directorio$ http://www.pagina1.org/nuevodirectorio;
-
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php7.4-fpm.sock;
+    }
 }
